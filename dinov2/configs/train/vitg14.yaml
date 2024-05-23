@@ -5,15 +5,15 @@ ibot:
   separate_head: true
   head_n_prototypes: 131072
 train:
-  batch_size_per_gpu: 12
-  dataset_path: ImageNet22k
-  centering: sinkhorn_knopp
+  batch_size_per_gpu: 1
+  dataset_path: MiniImageNet:split=TRAIN:root=/code/data/imagenet-mini:extra=/code/data/imagenet-mini/extra
+  # centering: sinkhorn_knopp
 student:
   arch: vit_giant2
   patch_size: 14
   drop_path_rate: 0.4
   ffn_layer: swiglufused
-  block_chunks: 4
+  block_chunks: 2
 teacher:
   momentum_teacher: 0.994
 optim:
