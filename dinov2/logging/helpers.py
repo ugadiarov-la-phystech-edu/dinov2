@@ -10,6 +10,7 @@ import logging
 import time
 
 import torch
+import wandb
 
 import dinov2.distributed as distributed
 
@@ -98,6 +99,10 @@ class MetricLogger(object):
                 self.dump_in_output_file(iteration=i, iter_time=iter_time.avg, data_time=data_time.avg)
                 eta_seconds = iter_time.global_avg * (n_iterations - i)
                 eta_string = str(datetime.timedelta(seconds=int(eta_seconds)))
+                record = {'global_step': i, 'progress': i / n_iterations, 'time': iter_time.avg}
+                for name, meter in self.meters.items():
+                    record[f'{name}_median'] = meter.median
+                    record[f'{name}_global_avg'] = meter.global_avg
                 if torch.cuda.is_available():
                     logger.info(
                         log_msg.format(
@@ -110,6 +115,7 @@ class MetricLogger(object):
                             memory=torch.cuda.max_memory_allocated() / MB,
                         )
                     )
+                    record['memory'] = torch.cuda.max_memory_allocated() / MB
                 else:
                     logger.info(
                         log_msg.format(
@@ -121,6 +127,9 @@ class MetricLogger(object):
                             data=str(data_time),
                         )
                     )
+                if wandb.run is not None:
+                    wandb.log(record)
+
             i += 1
             end = time.time()
             if i >= n_iterations:

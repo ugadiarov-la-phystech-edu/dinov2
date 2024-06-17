@@ -54,6 +54,24 @@ For python-based LazyConfig, use "path.key=value".
         type=str,
         help="Output directory to save logs and checkpoints",
     )
+    parser.add_argument(
+        "--project",
+        default="Test project",
+        type=str,
+        help="WANDB project name",
+    )
+    parser.add_argument(
+        "--group",
+        default=None,
+        type=str,
+        help="WANDB group name",
+    )
+    parser.add_argument(
+        "--run_name",
+        default=None,
+        type=str,
+        help="WANDB run name",
+    )
 
     return parser
 

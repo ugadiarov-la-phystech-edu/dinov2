@@ -7,6 +7,8 @@ import logging
 import os
 import sys
 
+import wandb
+
 from dinov2.logging import setup_logging
 from dinov2.train import get_args_parser as get_train_args_parser
 from dinov2.run.submit import get_args_parser, submit_jobs
@@ -39,6 +41,15 @@ class Trainer(object):
         self.args.output_dir = self.args.output_dir.replace("%j", str(job_env.job_id))
         logger.info(f"Process group: {job_env.num_tasks} tasks, rank: {job_env.global_rank}")
         logger.info(f"Args: {self.args}")
+
+        if job_env.global_rank == 0:
+            wandb.init(
+                dir=self.args.output_dir,
+                project=self.args.project,
+                group=self.args.group,
+                save_code=True,  # optional
+                name=self.args.run_name,
+            )
 
 
 def main():
