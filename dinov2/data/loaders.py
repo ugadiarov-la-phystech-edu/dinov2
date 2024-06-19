@@ -12,7 +12,7 @@ from torch.utils.data import Sampler
 
 from dinov2.data.datasets.image_net_mini import MiniImageNet
 
-from .datasets import ImageNet, ImageNet22k
+from .datasets import ImageNet, ImageNet22k, Synthetic
 from .samplers import EpochSampler, InfiniteSampler, ShardedInfiniteSampler
 
 
@@ -65,6 +65,10 @@ def _parse_dataset_str(dataset_str: str):
             kwargs["split"] = MiniImageNet.Split[kwargs["split"]]
     elif name == "ImageNet22k":
         class_ = ImageNet22k
+    elif name == "Synthetic":
+        class_ = Synthetic
+        if "split" in kwargs:
+            kwargs["split"] = Synthetic.Split[kwargs["split"]]
     else:
         raise ValueError(f'Unsupported dataset "{name}"')
 
