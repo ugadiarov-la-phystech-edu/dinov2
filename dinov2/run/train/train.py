@@ -2,16 +2,18 @@
 #
 # This source code is licensed under the Apache License, Version 2.0
 # found in the LICENSE file in the root directory of this source tree.
-
+import copy
 import logging
 import os
 import sys
 
 import wandb
+from omegaconf import OmegaConf
 
 from dinov2.logging import setup_logging
 from dinov2.train import get_args_parser as get_train_args_parser
 from dinov2.run.submit import get_args_parser, submit_jobs
+from dinov2.utils.config import get_cfg_from_args
 
 
 logger = logging.getLogger("dinov2")
@@ -41,6 +43,7 @@ class Trainer(object):
         self.args.output_dir = self.args.output_dir.replace("%j", str(job_env.job_id))
         logger.info(f"Process group: {job_env.num_tasks} tasks, rank: {job_env.global_rank}")
         logger.info(f"Args: {self.args}")
+        config = OmegaConf.to_container(get_cfg_from_args(copy.deepcopy(self.args)), resolve=True)
 
         if job_env.global_rank == 0:
             wandb.init(
@@ -51,6 +54,7 @@ class Trainer(object):
                 group=self.args.group,
                 name=self.args.run_name,
                 id=self.args.run_id,
+                config=config,
             )
 
 
