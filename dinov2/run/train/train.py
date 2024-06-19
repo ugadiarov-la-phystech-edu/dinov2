@@ -44,11 +44,13 @@ class Trainer(object):
 
         if job_env.global_rank == 0:
             wandb.init(
+                resume='allow',
+                save_code=True,  # optional
                 dir=self.args.output_dir,
                 project=self.args.project,
                 group=self.args.group,
-                save_code=True,  # optional
                 name=self.args.run_name,
+                id=self.args.run_id,
             )
 
 

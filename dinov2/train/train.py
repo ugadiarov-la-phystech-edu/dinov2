@@ -72,6 +72,12 @@ For python-based LazyConfig, use "path.key=value".
         type=str,
         help="WANDB run name",
     )
+    parser.add_argument(
+        '--run_id',
+        default=None,
+        type=str,
+        help="WANDB run id"
+    )
 
     return parser
 
