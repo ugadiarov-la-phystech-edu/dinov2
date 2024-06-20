@@ -43,12 +43,10 @@ class SSLMetaArch(nn.Module):
         logger.info(f"OPTIONS -- architecture : embed_dim: {embed_dim}")
 
         if cfg.student.pretrained_weights:
-            chkpt = torch.load(cfg.student.pretrained_weights)
-            logger.info(f"OPTIONS -- pretrained weights: loading from {cfg.student.pretrained_weights}")
-            state_dict = chkpt
-            if "model" in chkpt:
-                state_dict = chkpt["model"]
-            student_backbone.load_state_dict(state_dict, strict=False)
+            self.load_backbone_weights(cfg.student.pretrained_weights, student_backbone, 'student')
+
+        if cfg.teacher.pretrained_weights:
+            self.load_backbone_weights(cfg.teacher.pretrained_weights, teacher_backbone, 'teacher')
 
         self.embed_dim = embed_dim
         self.dino_out_dim = cfg.dino.head_n_prototypes
@@ -122,6 +120,15 @@ class SSLMetaArch(nn.Module):
         for p in self.teacher.parameters():
             p.requires_grad = False
         logger.info(f"Student and Teacher are built: they are both {cfg.student.arch} network.")
+
+    @staticmethod
+    def load_backbone_weights(checkpoint_path, backbone, backbone_name):
+        chkpt = torch.load(checkpoint_path)
+        logger.info(f"OPTIONS -- pretrained weights for {backbone_name}: loading from {checkpoint_path}")
+        state_dict = chkpt
+        if "model" in chkpt:
+            state_dict = chkpt["model"]
+        backbone.load_state_dict(state_dict, strict=False)
 
     def forward(self, inputs):
         raise NotImplementedError
