@@ -27,8 +27,8 @@ class _Split(Enum):
     @property
     def length(self) -> int:
         split_lengths = {
-            _Split.TRAIN: 1607400,
-            _Split.VAL: 402160,
+            _Split.TRAIN: 1709797,
+            _Split.VAL: 428263,
         }
         return split_lengths[self]
 
