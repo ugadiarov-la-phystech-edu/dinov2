@@ -78,6 +78,12 @@ For python-based LazyConfig, use "path.key=value".
         type=str,
         help="WANDB run id"
     )
+    parser.add_argument(
+        '--local_rank', type=int, default=-1
+    )
+    parser.add_argument(
+        '--local-rank', type=int, default=-1
+    )
 
     return parser
 
