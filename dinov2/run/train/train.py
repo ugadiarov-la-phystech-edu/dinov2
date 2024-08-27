@@ -45,7 +45,7 @@ class Trainer(object):
         logger.info(f"Args: {self.args}")
         config = OmegaConf.to_container(get_cfg_from_args(copy.deepcopy(self.args)), resolve=True)
 
-        if job_env.global_rank == 0:
+        if job_env.global_rank == 0 and self.args.project is not None:
             wandb.init(
                 resume='allow',
                 save_code=True,  # optional
